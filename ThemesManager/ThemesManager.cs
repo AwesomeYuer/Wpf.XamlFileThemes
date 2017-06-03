@@ -1,5 +1,7 @@
 ﻿namespace Microshaoft
 {
+    using Fluent;
+    using System;
     //using Microshaoft;
     //using Fluent;
     using System.Collections.Generic;
@@ -32,9 +34,16 @@
                         );
         }
 
+        private static void ApplyTheme<T>(T target, string themeXamlFilePath)
+        {
+
+
+        }
+
+
         public static void ApplyTheme
                             (
-                                this Application app
+                                this Application target
                                 , string themeXamlFilePath
                             )
         {
@@ -47,10 +56,10 @@
 
             if (resourceDictionary != null)
             {
-                app
+                target
                     .Resources
                     .MergedDictionaries.Clear();
-                app
+                target
                     .Resources
                     .MergedDictionaries
                     .Add(resourceDictionary);
@@ -59,7 +68,7 @@
 
         public static void ApplyTheme
                                 (
-                                    this ContentControl contentControl
+                                    this ContentControl target
                                     , string themeXamlFilePath
                                 )
         {
@@ -72,11 +81,11 @@
 
             if (resourceDictionary != null)
             {
-                contentControl
+                target
                         .Resources
                         .MergedDictionaries
                         .Clear();
-                contentControl
+                target
                         .Resources
                         .MergedDictionaries
                         .Add
@@ -88,28 +97,42 @@
 
 
 
-        //public static void ApplyTheme(this RibbonWindow target, string theme)
-        //{
-        //    //ResourceDictionary dictionary = ThemeManager.GetThemeResourceDictionary(theme);
+        public static void ApplyTheme(this RibbonWindow target, string themeXamlFilePath)
+        {
+            var resourceDictionary = XamlReaderHelper
+                                        .ParseFromFile<ResourceDictionary>
+                                                (
+                                                    themeXamlFilePath
+                                                //@"D:\MyGitHub\Wpf.MEF.Themes\Themes\Themes.Basis.Parts\Themes.Basis.Parts\ExpressionDark\Theme.xaml"
+                                                );
 
-        //    //if (dictionary != null)
-        //    //{
-        //    //    target.Resources.MergedDictionaries.Clear();
-        //    //    target.Resources.MergedDictionaries.Add(dictionary);
-        //    //}
+            if (resourceDictionary != null)
+            {
+                target
+                        .Resources
+                        .MergedDictionaries
+                        .Clear();
+                target
+                        .Resources
+                        .MergedDictionaries
+                        .Add
+                            (
+                                resourceDictionary
+                            );
+            }
 
-        //    var resources = Application.Current.Resources;
+            //var resources = Application.Current.Resources;
 
-        //    foreach (DictionaryEntry dictionaryEntry in resources)
-        //    {
-        //        Console.WriteLine(dictionaryEntry.Key);
-
-
-        //    }
+            //foreach (DictionaryEntry dictionaryEntry in resources)
+            //{
+            //    Console.WriteLine(dictionaryEntry.Key);
 
 
-        //    Application.Current.Resources["RibbonThemeColorBrush"] = new SolidColorBrush(Colors.Red);
-        //}
+            //}
+
+
+            //Application.Current.Resources["RibbonThemeColorBrush"] = new SolidColorBrush(Colors.Red);
+        }
 
 
 
@@ -158,18 +181,38 @@
         /// </summary>
         private static void OnThemeChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
         {
+            //return;
             string theme = e.NewValue as string;
             if (theme == string.Empty)
             {
                 return;
             }
 
-            ContentControl control = dependencyObject as ContentControl;
-            if (control != null)
+            if (dependencyObject is ContentControl)
             {
-                control.ApplyTheme(theme);
+                ContentControl control = dependencyObject as ContentControl;
+                if (control != null)
+                {
+                    control.ApplyTheme(theme);
+                }
             }
+            else if (dependencyObject is RibbonWindow)
+            {
+                RibbonWindow control = dependencyObject as RibbonWindow;
+                if (control != null)
+                {
+                    Console.WriteLine(control.Name);
+                    control.ApplyTheme(theme);
+                }
+
+            }
+
+
+
         }
+
+  
+
 
         #endregion
 

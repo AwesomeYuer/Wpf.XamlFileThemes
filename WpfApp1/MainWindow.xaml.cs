@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microshaoft;
+using WPF.Themes.Demo;
 
 namespace WpfApp1
 {
@@ -88,12 +89,14 @@ namespace WpfApp1
 
                 //Application Level
                 Application.Current.ApplyTheme(theme);
+                
             }
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             new Window2().Show();
 
+            new RibbonWindow1().Show();
             //new MyFirstWindow().Show();
         }
     }
